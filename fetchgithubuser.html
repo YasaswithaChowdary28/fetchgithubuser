@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fetch API</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #fff176, #81ecec, #1e293b);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 400px;
+      position: relative;
+      top: -50px; /* Moved up */
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 25px;
+      color: #1e293b;
+    }
+
+    input[type="text"],
+    button {
+      width: 100%; /* Ensure equal width */
+      box-sizing: border-box;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1.1rem;
+    }
+
+    button {
+      padding: 12px;
+      font-size: 1.1rem;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0652dd;
+    }
+
+    #album {
+      margin-top: 25px;
+    }
+
+    #album img {
+      border-radius: 50%;
+      margin: 10px 0;
+    }
+
+    #album p {
+      margin: 5px 0;
+      color: #334155;
+    }
+
+    #album a {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      color: #0984e3;
+      font-weight: bold;
+    }
+
+    #album a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fetch GitHub User</h1>
+    <input type="text" id="username" placeholder="Enter GitHub username" />
+    <button id="load" onclick="loadDetails()">Load Details</button>
+    <div id="album"></div>
+  </div>
+
+  <script>
+    function loadDetails() {
+      const username = document.getElementById("username").value;
+      const albumDiv = document.getElementById("album");
+
+      fetch(`https://api.github.com/users/${username}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("User not found");
+          return res.json();
+        })
+        .then((data) => {
+          albumDiv.innerHTML = `
+            <h2>${data.name || data.login}</h2>
+            <img src="${data.avatar_url}" alt="${data.login}'s avatar" width="120" />
+            <p>Public Repos: ${data.public_repos}</p>
+            <p>Followers: ${data.followers}</p>
+            <p>Following: ${data.following}</p>
+            <a href="${data.html_url}" target="_blank">View GitHub Profile</a>
+          `;
+        })
+        .catch((err) => {
+          albumDiv.innerHTML = "<p style='color:red;'>User not found</p>";
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
